@@ -24,7 +24,8 @@ void display(){
 void randomSymbol(){
     int randNumber = (rand() % 2) + 1;
     symbol = randNumber == 1 ? 'X' : 'O';
-    cout << (symbol == 'X' ? player1 : player2) << " will play with " << symbol << endl;  
+    cout<<endl<<(symbol == 'X' ? player1 : player2) 
+    << " will play with " << symbol << endl;  
 }
 bool checkWinner() {
     // Check in all rows and columns
@@ -136,37 +137,65 @@ void getLocation(){
     }
 }
 
-
-
-
+void resetBoard() {
+    // Reset all elements of the board to their initial values
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            // Set values back to 1, 2, 3, ..., 9
+            table[i][j] = '0' + (i * 3 + j + 1); 
+        }
+    }
+    // resetting tieGame variable
+    tieGame = false;
+    player1.clear();
+    player2.clear();
+}
 
 
 int main() {
-    cout << "\n\n\nWelcome to the TIC TAC TOE showdown!👊" << endl;
-    cout << "The Game will automatically decide which player will begin." << endl;
-    cout << "Heres your board, choose numbers to fill position\n" << endl;
-    display();
-    cout << "Enter name of first player: ";
-    getline(cin, player1); //because cin only takes upto first space/tab..etc.
-    cout << "Enter name of second player: ";
-    getline(cin, player2);
+    bool playAgain = true;
 
-    randomSymbol();
-    bool firstIteration = true;
-    while (!checkWinner()) {
-        if (firstIteration) {
-            display();
-            firstIteration = false;
+    cout << "\n\n\nWelcome to the TIC TAC TOE showdown!👊" << endl;
+
+    while (playAgain) {
+        cout << "The Game will automatically decide which player will begin." << endl;
+        cout << "Here's your board, choose numbers to fill position\n" << endl;
+        display();
+        cout << "Enter name of first player: ";
+        getline(cin, player1);
+        cout << "Enter name of second player: ";
+        getline(cin, player2);
+
+        randomSymbol();
+        bool firstIteration = true;
+
+        while (!checkWinner()) {
+            if (firstIteration) {
+                display();
+                firstIteration = false;
+            }
+            getLocation();
         }
-        getLocation();
-        
+
+        if (symbol == 'X' && tieGame == false)
+            cout << player1 << ", Wins. Congratulations✨✨" << endl;
+        else if (symbol == 'O' && tieGame == false)
+            cout << player2 << " Wins. Congratulations✨✨." << endl;
+        else
+            cout << "It's a draw" << endl;
+
+        // Asking if players want to play again
+        char playAgainInput;
+        cout << "Do you want to play again? (y/n): ";
+        cin >> playAgainInput;
+        cin.ignore();
+        if (playAgainInput != 'y' && playAgainInput != 'Y') {
+            playAgain = false;
+        } else {
+            // Resetting the board for a new game
+            resetBoard();
+        }
     }
-    if (symbol == 'X' && tieGame == false)
-        cout << player1 << ", Wins. Congratulations✨✨" << endl;
-    else if (symbol == 'O' && tieGame == false)
-        cout << player2 << " Wins. Congratulations✨✨." << endl;
-    else
-        cout << "It's a draw" << endl;
 
     return 0;
 }
